@@ -1,14 +1,17 @@
 import React from "react";
-import styles from "../App.module.css";
-export default function Trivia({ qa }) {
+import styles from "./Trivia.module.css";
+export default function Trivia({ currentTrivia }) {
+  const correctText = (text) =>
+    text.replace(/&quot;/g, '"').replace(/&#039;/g, '"');
+
   return (
     <div className={styles.trivia}>
       <div className={styles.question}>
-        {/* Rolex is a company that specializes in what type of product? */}
-        {qa.question}
+        {correctText(currentTrivia.question)}
       </div>
+
       <div className={styles.answers}>
-        {qa.answers.map((item) => (
+        {currentTrivia.answers.map((item) => (
           <div
             className={
               item.correct
@@ -16,13 +19,9 @@ export default function Trivia({ qa }) {
                 : styles.answer
             }
           >
-            {item.text}
+            {correctText(item.text)}
           </div>
         ))}
-
-        {/* <div className={styles.answer}>Watches</div>
-        <div className={styles.answer}>Food</div>
-        <div className={styles.answer}>Cosmetics</div> */}
       </div>
     </div>
   );
