@@ -30,3 +30,15 @@
 .bottom {
   height: 50%;
 }
+.result {
+  margin: auto;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.result p {
+  text-align: center;
+}

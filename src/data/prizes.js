@@ -1,6 +1,3 @@
-// import { useMemo } from "react";
-// function
-// useMemo(() => {
 const prizes = [
   { id: 1, amount: 100 },
   { id: 2, amount: 200 },
@@ -18,6 +15,5 @@ const prizes = [
   { id: 14, amount: 500000 },
   { id: 15, amount: 1000000 },
 ].reverse();
-// }, []);
 
 export default prizes;

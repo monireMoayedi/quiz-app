@@ -1,10 +1,12 @@
 import styles from "./App.module.css";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Fragment } from "react";
 import Quiz from "./components/Quiz";
 import Pyramid from "./components/Pyramid";
 function App() {
   const [quiz, setquiz] = useState([]);
-  // const [currentTrivia, setcurrentTrivia] = useState("");
+  const [finish, setfinish] = useState(false);
+  const [questionNumber, setquestionNumber] = useState(0);
+  const [prize, setprize] = useState(0);
 
   const fetchQuiz = useCallback(async () => {
     const res = await fetch(
@@ -43,81 +45,39 @@ function App() {
     fetchQuiz();
   }, [fetchQuiz]);
 
+  const setStop = useCallback(() => setfinish(true), []);
+  const setResult = useCallback(
+    (result) =>
+      result ? setquestionNumber((prev) => ++prev) : setfinish(true),
+    []
+  );
+
+  const userPrize = useCallback((p) => {
+    setprize(p);
+  }, []);
+
   return (
-    <div className={styles.App}>
-      {quiz[0]?.question && <Quiz trivia={quiz} />}
-      {quiz.length > 0 && <Pyramid currentTrivia={quiz[0]} />}
-    </div>
+    <Fragment>
+      <div className={styles.App}>
+        {quiz[questionNumber]?.question && (
+          <Fragment>
+            <Quiz
+              trivia={quiz}
+              stop={finish}
+              setStop={setStop}
+              setResult={setResult}
+              questionNumber={questionNumber}
+              prize={prize}
+            />
+            <Pyramid
+              currentTrivia={quiz[questionNumber]}
+              userPrize={userPrize}
+            />
+          </Fragment>
+        )}
+      </div>
+    </Fragment>
   );
 }
 
 export default App;
-
-// const data = [
-//   {
-//     id: 1,
-//     question: "Rolex is a company that specializes in what type of product?",
-//     answers: [
-//       {
-//         text: "Phone",
-//         correct: false,
-//       },
-//       {
-//         text: "Watches",
-//         correct: true,
-//       },
-//       {
-//         text: "Food",
-//         correct: false,
-//       },
-//       {
-//         text: "Cosmetic",
-//         correct: false,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     question: "When did the website `Facebook` launch?",
-//     answers: [
-//       {
-//         text: "2004",
-//         correct: true,
-//       },
-//       {
-//         text: "2005",
-//         correct: false,
-//       },
-//       {
-//         text: "2006",
-//         correct: false,
-//       },
-//       {
-//         text: "2007",
-//         correct: false,
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     question: "Who played the character of harry potter in movie?",
-//     answers: [
-//       {
-//         text: "Johnny Deep",
-//         correct: false,
-//       },
-//       {
-//         text: "Leonardo Di Caprio",
-//         correct: false,
-//       },
-//       {
-//         text: "Denzel Washington",
-//         correct: false,
-//       },
-//       {
-//         text: "Daniel Red Cliff",
-//         correct: true,
-//       },
-//     ],
-//   },
-// ];
