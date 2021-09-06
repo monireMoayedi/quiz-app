@@ -1,27 +1,88 @@
 import { useState, useEffect } from "react";
 import styles from "./Trivia.module.css";
+import useSound from "use-sound";
+// import play from "../sounds/play.mp3";
+// import useSound from "use-sound";
+
+import correct from "../sounds/correct.mp3";
+import wrong from "../sounds/wrong.mp3";
+
 export default function Trivia({ currentTrivia, setResult, resetTimer }) {
-  const [userAnswer, setuserAnswer] = useState(null);
+  const [selectedAnswer, setselectedAnswer] = useState(null);
+  const [className, setclassName] = useState(null);
+
+  const [correctAnswer] = useSound(correct);
+  const [wrongAnswer] = useSound(wrong);
 
   useEffect(() => {
-    if (userAnswer !== null) {
-      console.log(`next`, userAnswer.correct);
-      const showResult = setTimeout(() => {
-        setResult(userAnswer.correct);
+    console.log(
+      "currentTrivia.answers.answ :>> ",
+      currentTrivia.answers.find((a) => a.correct === true)
+    );
+  }, [currentTrivia.answers]);
+
+  // useEffect(() => {
+  //   letsPlay();
+  // }, [letsPlay]);
+
+  const delay = (callback, delay) => {
+    setTimeout(callback, delay);
+  };
+  useEffect(() => {
+    // console.log(`next`, selectedAnswer.correct);
+    const activeAnswer = delay(() => {
+      if (selectedAnswer !== null) {
+        selectedAnswer?.correct
+          ? setclassName(`${styles.answer} ${styles.correct} `)
+          : setclassName(`${styles.answer} ${styles.wrong} `);
+      }
+    }, 2000);
+
+    // const showResult = delay(() => {
+    //   setResult(selectedAnswer.correct);
+    //   resetTimer();
+    // }, 6000);
+
+    return () => {
+      clearTimeout(activeAnswer);
+    };
+  }, [selectedAnswer]);
+  // }, [selectedAnswer, setResult, resetTimer, correctAnswer, wrongAnswer]);
+  useEffect(() => {
+    const showResult = delay(() => {
+      if (selectedAnswer !== null) {
+        setResult(selectedAnswer.correct);
         resetTimer();
-      }, 3000);
-      return () => {
-        clearTimeout(showResult);
-      };
-    }
-  }, [userAnswer, setResult, resetTimer]);
+      }
+    }, 6000);
+
+    return () => {
+      clearTimeout(showResult);
+    };
+  }, [selectedAnswer, resetTimer, setResult]);
+
+  useEffect(() => {
+    const correctAnswer = () => console.log("correct :>> ");
+    const wrongAnswer = () => console.log("wrong :>> ");
+
+    const playSound = delay(() => {
+      if (selectedAnswer !== null) {
+        selectedAnswer?.correct ? correctAnswer() : wrongAnswer();
+      }
+    }, 3000);
+
+    return () => {
+      clearTimeout(playSound);
+    };
+  }, [selectedAnswer, correctAnswer, wrongAnswer]);
 
   const correctText = (text) =>
     text.replace(/&quot;/g, '"').replace(/&#039;/g, '"');
 
   const responseHandler = (item) => {
-    if (!userAnswer) {
-      setuserAnswer(item);
+    setclassName(`${styles.answer} ${styles.active}`);
+    if (!selectedAnswer) {
+      setselectedAnswer(item);
     }
   };
 
@@ -36,11 +97,12 @@ export default function Trivia({ currentTrivia, setResult, resetTimer }) {
           <div
             key={index}
             className={
-              item.text === userAnswer?.text
-                ? `${styles.answer} ${
-                    item.correct ? styles.correct : styles.wrong
-                  }`
-                : styles.answer
+              item.text === selectedAnswer?.text
+                ? className
+                : // ? `${styles.answer} ${
+                  //     item.correct ? styles.correct : styles.wrong
+                  //   }`
+                  styles.answer
             }
             onClick={responseHandler.bind(null, item)}
           >

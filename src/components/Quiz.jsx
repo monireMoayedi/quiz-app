@@ -1,20 +1,31 @@
 import styles from "./Quiz.module.css";
 import Trivia from "./Trivia";
 import { useState, useEffect, Fragment, useCallback } from "react";
+// import useSound from "use-sound";
+// import play from "../sounds/play.mp3";
+
 function Quiz({ trivia, setStop, setResult, questionNumber, stop, prize }) {
   const [timer, settimer] = useState(30);
+  // const [letsPlay] = useSound(play);
+
+  // useEffect(() => {
+  //   letsPlay();
+  //   // console.log('play :>> ');
+  // }, [letsPlay]);
 
   useEffect(() => {
     const timerDec = setTimeout(() => {
-      settimer((prev) => prev - 1);
-      if (timer === 0) {
-        setStop(true);
+      if (!stop) {
+        settimer((prev) => prev - 1);
+        if (timer === 0) {
+          setStop(true);
+        }
       }
     }, 1000);
     return () => {
       clearTimeout(timerDec);
     };
-  }, [timer, setStop]);
+  }, [timer, stop, setStop]);
 
   const resetTimer = useCallback(() => {
     settimer(30);

@@ -2,11 +2,25 @@ import styles from "./App.module.css";
 import { useState, useEffect, useCallback, Fragment } from "react";
 import Quiz from "./components/Quiz";
 import Pyramid from "./components/Pyramid";
+// import useSound from "use-sound";
+// import play from "./sounds/play.mp3";
+
 function App() {
   const [quiz, setquiz] = useState([]);
   const [finish, setfinish] = useState(false);
   const [questionNumber, setquestionNumber] = useState(0);
   const [prize, setprize] = useState(0);
+  // const [letsplay] = useSound(play);
+
+  // useEffect(() => {
+  //   setfinish(false);
+  //   const play = setTimeout(() => {
+  //     letsplay();
+  //   }, 0);
+  //   return () => {
+  //     clearTimeout(play);
+  //   };
+  // }, [letsplay]);
 
   const fetchQuiz = useCallback(async () => {
     const res = await fetch(
